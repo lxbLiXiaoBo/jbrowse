@@ -29,6 +29,13 @@ return declare( null, {
     _getMismatches: function( feature ) {
         var mismatches = [];
 
+        // parse the MD tag if it has one
+        var mdString = feature.get( this.mdAttributeName );
+        if( mdString )  {
+            mismatches.push.apply( mismatches, this._mdToMismatches( feature, mdString, cigarOps, mismatches ) );
+        }
+
+
         // parse the CIGAR tag if it has one
         var cigarString = feature.get( this.cigarAttributeName ),
             cigarOps;
@@ -36,13 +43,6 @@ return declare( null, {
             cigarOps = this._parseCigar( cigarString );
             mismatches.push.apply( mismatches, this._cigarToMismatches( feature, cigarOps ) );
         }
-
-        // parse the MD tag if it has one
-        var mdString = feature.get( this.mdAttributeName );
-        if( mdString )  {
-            mismatches.push.apply( mismatches, this._mdToMismatches( feature, mdString, cigarOps, mismatches ) );
-        }
-
         // uniqify the mismatches
         var seen = {};
         mismatches = array.filter( mismatches, function( m ) {
@@ -168,6 +168,7 @@ return declare( null, {
               curr.length = token.length-1;
               curr.base   = '*';
               curr.type   = 'deletion';
+              curr.seq    = token.substring(1);
               nextRecord();
           }
           else if( token.match(/^[a-z]/i) ) { // mismatch
