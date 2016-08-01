@@ -29,8 +29,6 @@ return declare( null, {
     _getMismatches: function( feature ) {
         var mismatches = [];
 
-
-
         // parse the CIGAR tag if it has one
         var cigarString = feature.get( this.cigarAttributeName ),
             cigarOps;
@@ -38,7 +36,6 @@ return declare( null, {
             cigarOps = this._parseCigar( cigarString );
             mismatches.push.apply( mismatches, this._cigarToMismatches( feature, cigarOps ) );
         }
-
 
         // parse the MD tag if it has one
         var mdString = feature.get( this.mdAttributeName );
@@ -60,7 +57,6 @@ return declare( null, {
             seen[key] = true;
             return !s;
         });
-        
 
         return mismatches;
     },
